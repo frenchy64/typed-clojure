@@ -1063,3 +1063,10 @@
 
 (deftest hmap-subtype
   (is (cf {} (clojure.lang.APersistentMap Any Any))))
+
+(deftest into-array>-test
+  ;; primitive handling
+  (is (cf (class (byte-array 1)) (typed.core/Option java.lang.Class)))
+  (is (cf (typed.core/into-array> byte byte [(byte 1)]) (Array byte)))
+  (is (= (get (into-array Byte/TYPE [(byte 1)]) 0) 
+         (get (into-array> byte byte [(byte 1)]) 0))))

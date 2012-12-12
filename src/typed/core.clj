@@ -39,7 +39,7 @@
   [debug-string frm] 
   frm)
 
-(declare Method->Function unparse-type unparse-filter)
+(declare Method->Function unparse-type unparse-filter symbol->Class)
 
 (defn method-type 
   "Given a method symbol, print the Typed Clojure types assigned to it"
@@ -222,7 +222,7 @@
       [sym# (unparse-type ty#)]))))
 
 (defn into-array>* [javat cljt coll]
-  (into-array (resolve javat) coll))
+  (into-array (symbol->Class javat) coll))
 
 (defmacro into-array> 
   "Make a Java array with Java class javat and Typed Clojure type
@@ -482,7 +482,7 @@
     double Double/TYPE
     boolean Boolean/TYPE
     char Character/TYPE
-    (Class/forName (str sym))))
+    (resolve sym)))
 
 (defn Class->symbol [cls]
   {:pre [(class? cls)]

@@ -205,7 +205,7 @@
 (declare-type RClass)
 
 (defn RClass->Class [rcls]
-  (Class/forName (str (.the-class rcls))))
+  (symbol->Class (.the-class rcls)))
 
 (declare RESTRICTED-CLASS instantiate-poly Class->symbol)
 

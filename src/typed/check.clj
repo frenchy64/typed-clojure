@@ -878,7 +878,7 @@
   [{:keys [args] :as expr} & [expected]]
   (assert (= 3 (count args)) (error-msg "Wrong number of args to typed.core/into-array>*"))
   (let [[javat-syn cljt-syn coll-expr] args
-        javat (let [c (resolve (:val javat-syn))]
+        javat (let [c (symbol->Class (:val javat-syn))]
                 (assert (class? c) (error-msg "First argument of into-array> must be a Java class, given " (:val javat-syn)))
                 c)
         cljt (parse-type (:val javat-syn))
@@ -1995,7 +1995,7 @@
         (assert (not (.contains s-nosuffix "<>")))
         ;Nullable elements
         (let [t (Method-symbol->Type (symbol s-nosuffix) nilable?)
-              c (let [c (resolve (symbol s-nosuffix))
+              c (let [c (symbol->Class (symbol s-nosuffix))
                       _ (assert (class? c))]
                   c)]
           (->PrimitiveArray c t t))))))
