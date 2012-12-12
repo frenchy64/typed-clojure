@@ -1063,3 +1063,8 @@
 
 (deftest hmap-subtype
   (is (cf {} (clojure.lang.APersistentMap Any Any))))
+
+;; This loading is a sufficient test.
+(tc-ignore
+ (defprotocol some-proto (some-proto-method [_]))
+ some-proto-method)
