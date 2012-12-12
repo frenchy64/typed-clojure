@@ -881,7 +881,7 @@
         javat (let [c (symbol->Class (:val javat-syn))]
                 (assert (class? c) (error-msg "First argument of into-array> must be a Java class, given " (:val javat-syn)))
                 c)
-        cljt (parse-type (:val javat-syn))
+        cljt (parse-type (:val cljt-syn))
         ccoll (check coll-expr (ret (Un -nil (RClass-of Seqable [cljt]))))]
     (assoc expr
            expr-type (ret (->PrimitiveArray javat cljt cljt)))))
