@@ -482,7 +482,7 @@
     double Double/TYPE
     boolean Boolean/TYPE
     char Character/TYPE
-    (resolve sym)))
+    (Class/forName (str sym))))
 
 (defn Class->symbol [cls]
   {:pre [(class? cls)]
