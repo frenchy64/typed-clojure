@@ -36,16 +36,24 @@
 (ann clojure.core/drop-while (All [x]
                                [[x -> Any] (Option (Seqable x)) -> (Seqable x)]))
 
-(ann clojure.core/split-with 
-     (All [x y z] [[x -> Any :filters {:then (is y 0), :else (is z 0)}] (tc/Option (Seqable x)) 
+(ann clojure.core/split-with
+     (All [x y z] [[x -> Any :filters {:then (is y 0), :else (is z 0)}] (tc/Option (Seqable x))
                    -> '[(Seqable y) (Seqable z)]]))
 
 
-(ann clojure.core/repeatedly 
+(ann clojure.core/repeatedly
      (All [x]
           (Fn [[-> x] -> (LazySeq x)]
               [[-> x] AnyInteger -> (LazySeq x)])))
 
+
+(ann clojure.core/repeat
+     (All [x]
+          (Fn [x -> (LazySeq x)]
+              [AnyInteger x -> (LazySeq x)])))
+
+(ann clojure.core/replace
+     [(IPersistentMap Any Any) (Option (Seqable Any)) -> (IPersistentMap Any Any)])
 
 (ann clojure.core/some (All [x y] [[x -> y] (Option (Seqable x)) -> (Option y)]))
 
@@ -98,15 +106,15 @@
                    [(Array _ r) AnyInteger b ... b
                     :recur (rec r b ... b)])))
 
-  (ann clojure.core/aget 
+  (ann clojure.core/aget
        (Label [rec]
-              (All [x :dotted [b]] 
+              (All [x :dotted [b]]
                    (Fn [(Array _ x) AnyInteger -> x]
                        [(Array _ x) AnyInteger b ... b
-                        :recur 
+                        :recur
                         (rec x b ... b)]))))
 
-  (ann clojure.core/assoc 
+  (ann clojure.core/assoc
        (Label [rec]
               (All [[h :< (HMap {})] x y [k :< (I AnyValue Keyword)] [e :< k] :dotted [b]]
                    [h k v -> (I h (HMap k v))]
@@ -127,9 +135,9 @@
                     (rec (I m (HMap {} :without [k])) b ... b)])))
 
   (update-in {:a {:b 1}} [:a :b] inc)
-  (update-in 
-    (update-in {:a {:b 1}} [:a] inc) 
-    [:b] 
+  (update-in
+    (update-in {:a {:b 1}} [:a] inc)
+    [:b]
     inc)
 
   (ann clojure.core/update-in
@@ -141,7 +149,7 @@
                    :recur
                    [r (Vector* b ... b) [v a ... a -> e] a ... a]]))))
 
-  ;(ann clojure.core/get-in 
+  ;(ann clojure.core/get-in
   ;     (Label [rec]
   ;       (All [[x :< (U nil (Associative Any Any))] k :dotted [b]]
   ;            (Fn [x (Vector*) -> x]
@@ -151,7 +159,7 @@
   ;                [(U nil (Associative Any y)) (Vector* k) -> (U nil x)]
   ;                    )))))
 
-  (ann clojure.core/partial 
+  (ann clojure.core/partial
        (Label [rec]
               (All [x [a :< x] r :dotted [b c]]
                    (Fn [[x c ... c -> r] a -> [c ... c -> r]]
@@ -175,7 +183,7 @@
      (All [x y b ...]
           [[x -> y] [b ... b -> x] -> [b ... b -> y]]))
 
-(ann clojure.core/partial 
+(ann clojure.core/partial
      (All [y a b c d e f g h i j k l m n o p z ...]
           (Fn [[a z ... z -> y] a -> [z ... z -> y]]
               [[a b z ... z -> y] a b -> [z ... z -> y]]
@@ -207,7 +215,7 @@
 (ann clojure.core/atom (All [x] [x -> (Atom x x)]))
 
 (comment
-  (ann clojure.core/atom (All [x] [x & {(U nil (IPersistentMap Any Any)) :meta 
+  (ann clojure.core/atom (All [x] [x & {(U nil (IPersistentMap Any Any)) :meta
                                         (U nil [x -> Any]) :validator}
                                    -> (Atom x x)]))
   )
@@ -218,7 +226,7 @@
 (ann clojure.core/reset! (All [w r]
                               [(Atom w r) w -> r]))
 
-(ann clojure.core/swap! (All [w r b ...] 
+(ann clojure.core/swap! (All [w r b ...]
                              [(Atom w r) [r b ... b -> w] b ... b -> w]))
 
 (ann clojure.core/symbol
@@ -253,6 +261,9 @@
                                              (is nil 0))
                                     :else (is (CountRange 1) 0)}])
 
+(ann clojure.core/every?
+     (All [x y] [[x -> Any] (Option (Seqable y)) -> boolean]))
+
 (ann clojure.core/map
      (All [c a b ...]
           [[a b ... b -> c] (U nil (Seqable a)) (U nil (Seqable b)) ... b -> (LazySeq c)]))
@@ -269,7 +280,7 @@
 
 (ann clojure.core/reduce
      (All [a c]
-          (Fn 
+          (Fn
             ;Without accumulator
             ; default
             ; (reduce + my-coll)
@@ -282,7 +293,7 @@
 (comment
 (ann clojure.core/reduce
      (All [a c d]
-          (Fn 
+          (Fn
             ;Without accumulator
             ; empty coll, f takes no args
             ; (reduce + []) => 0, (reduce + nil) => 0
@@ -350,14 +361,14 @@
 
 (ann clojure.core/get
      (All [x]
-          (Fn 
+          (Fn
             [(IPersistentSet x) Any -> (Option x)]
             [java.util.Map Any -> (Option Any)]
             [String Any -> (Option Character)]
             [nil Any -> nil]
             [(Option (ILookup Any x)) Any -> (Option x)])))
 
-(ann clojure.core/merge 
+(ann clojure.core/merge
      (All [k v]
           (Fn [nil * -> nil]
               [(IPersistentMap k v) * -> (IPersistentMap k v)]
@@ -429,12 +440,12 @@
 (override-method clojure.lang.Numbers/gt [Number Number -> boolean])
 (override-method clojure.lang.Numbers/gte [Number Number -> boolean])
 
-(override-constructor clojure.lang.LazySeq 
+(override-constructor clojure.lang.LazySeq
                       (All [x]
                         [[-> (Option (Seqable x))] -> (LazySeq x)]))
 
 (let [t (make-FnIntersection
-          (make-Function 
+          (make-Function
             [(Un -nil (RClass-of Seqable [-any]))]
             (parse-type 'AnyInteger)
             nil nil
