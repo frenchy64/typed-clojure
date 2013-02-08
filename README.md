@@ -1,3 +1,7 @@
+This repository has moved: [core.typed](https://github.com/clojure/core.typed)
+======
+
+
 Leiningen dependency (Clojars):
 
 `[typed "0.1.6"]`
